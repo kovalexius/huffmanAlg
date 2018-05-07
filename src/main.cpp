@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include "data_types.h"
+#include "element.h"
 
 // Подсчет колва повторений каждого элемента в сообщении
 void countElements( const char *in_buf, const uint64_t len, const int gran, 

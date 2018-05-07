@@ -1,4 +1,4 @@
-#ifndef __DATA_TYPES_H
+﻿#ifndef __DATA_TYPES_H
 #define __DATA_TYPES_H
 
 #include <iostream>
@@ -9,103 +9,6 @@
 #include <initializer_list>
 #include <memory.h>
 
-namespace rtvdt   // runtime variadic data types
-{
-    struct Element
-    {
-        Element(const char * ptr, const int len) : m_len(len),
-                                                   m_data(ptr)
-        {}
-
-        bool operator < (const Element & other) const 
-        {
-            if (m_len == other.m_len)
-                return (memcmp(m_data, other.m_data, m_len) < 0) ? true : false;
-            else
-                return (m_len < other.m_len);
-        }
-
-        friend bool operator == (const Element&, const Element&);
-        friend bool isEquals(const Element *e1, const Element *e2);
-        friend struct EqualElement;
-        friend struct KeyHash;
-        friend std::ostream & operator << (std::ostream &os, const Element & a);
-    //private:
-        int m_len;
-        const char *m_data;
-    };
-
-    // Equal operator
-    bool operator == (const Element &e1, const Element &e2)
-    {
-        return (e1.m_len == e2.m_len) ? (memcmp(e1.m_data, e2.m_data, e1.m_len) == 0) : false;
-    }
-
-    // Equal function
-    bool isEquals(const Element *e1, const Element *e2)
-    {
-        return (e1->m_len == e2->m_len) ? (memcmp(e1->m_data, e2->m_data, e1->m_len) == 0) : false;
-    }
-
-    // Equal Comparator
-    struct EqualElement
-    {
-        bool operator () (const Element &e1, const Element &e2) const
-        {
-            return (e1.m_len == e2.m_len) ? (memcmp(e1.m_data, e2.m_data, e1.m_len) == 0) : false;
-        }
-    };
-
-    // out manipulator
-    std::ostream & operator << (std::ostream &os, const Element & a)
-    {
-        os << std::string(a.m_data, a.m_len);
-        return os;
-    }
-
-    struct KeyHash 
-    {
-        std::size_t operator()(const Element& k) const
-        {
-            return std::hash<int>()(k.m_len) ^
-                std::hash<std::string>()(std::string(k.m_data, k.m_len));
-        }
-    };
-}   // end of rtvdt
-
-
-/////////// template tools //////////
-#pragma pack(push, 1)
-template<int Len>
-struct Element
-{
-    bool operator==(const Element & other) {
-        return (memcmp(m_data, other.m_data, Len) == 0);
-    }
-private:
-    const char m_data[Len];
-};
-
-template<>
-struct Element<1>
-{
-    bool operator==(const Element & other) {
-        return (m_data == other.m_data);
-    }
-private:
-    const char m_data;
-};
-#pragma pack(pop)
-///////////////////////////////////////
-
-//////////type for binary tree///////////
-struct treeNode
-{
-    std::unique_ptr<rtvdt::Element> elem;
-    std::unique_ptr<treeNode> left;
-    std::unique_ptr<treeNode> right;
-};
-/////////////////////////////////////////
 
 ///////////Pack bits to bytes vector////////////
 namespace containers
@@ -115,8 +18,12 @@ namespace containers
         vector_bb() : m_count(0)
         {}
 
-        vector_bb(std::initializer_list<bool> list) : m_count(0)
+		vector_bb(std::initializer_list<bool> list) : m_count(0)
         {
+			//auto numArgs = list.size();
+			//auto lenElem = sizeof(decltype(m_data)::value_type) * 8;
+			//m_count = numArgs % lenElem;
+
             for (auto &item : list)
                 push_back(item);
         }
@@ -126,30 +33,52 @@ namespace containers
             return m_data.data();
         }
 
-        size_t size()
+        size_t numberBits()
         {
-            return m_data.size();
+			return m_data.size() * sizeof(decltype(m_data)::value_type) + m_count;
         }
 
-        void push_back(const bool bit)
+		size_t numberElements()
+		{
+
+		}
+
+		void push_back(const bool _bit) 
+#ifdef _MSC_VER <= 1800
+			throw()
+#else
+			noexcept(true)
+#endif
         {
             if (m_count == 0)
                 m_data.push_back(0);
-            if (bit)
-                m_data.back() = m_data.back() | 0x80 >> m_count;
-            if ((++m_count) > 7)
+            if (_bit)
+                m_data.back() = m_data.back() | 0x80 >> m_count;   // Взводим конкретный бит
+			else
+				m_data.back() = m_data.back() & ~(0x80 >> m_count);  // Обнуляем конкретный бит
+			auto bitLen = sizeof(decltype(m_data)::value_type) * 8;
+			if ((++m_count) > sizeof(decltype(m_data)::value_type) * 8 - 1)
                 m_count = 0;
+
+			std::vector<uint32_t>::value_type someVal;
         }
 
-        void pop_back()
+        bool pop_back()
+#ifdef _MSC_VER <= 1800
+			throw(std::out_of_range)
+#else
+			noexcept(false)
+#endif
         {
             if (m_data.size() == 0)
-                return;
+                throw(std::out_of_range(std::string("try to pop from empty vector_bb")));
             if ((--m_count) < 0)
-                m_count = 7;
-            m_data.back() = m_data.back() & ~(0x80 >> m_count);
+				m_count = sizeof(decltype(m_data)::value_type) - 1;
+			bool result = m_data.back() & (0x80 >> m_count);
+            //m_data.back() = m_data.back() & ~(0x80 >> m_count);
             if (m_count == 0)
                 m_data.pop_back();
+			return result;
         }
 
         bool operator < (const vector_bb &other) 
@@ -171,7 +100,9 @@ namespace containers
 			return m_data[pos];
         }
     private:
+		// Количество заполненных бит в текущем байте
         int m_count;
+		// тут хранится все побайтово
         std::vector<char> m_data;
     };
 }
