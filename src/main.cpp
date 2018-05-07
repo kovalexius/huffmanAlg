@@ -7,11 +7,12 @@
 #include <memory>
 #include <stdint.h>
 
-#include "data_types.h"
+#include "vector_bb.h"
 #include "element.h"
 
-// Подсчет колва повторений каждого элемента в сообщении
-void countElements( const char *in_buf, const uint64_t len, const int gran, 
+// Подсчет кол-ва повторений каждого элемента в сообщении
+void countElements(const char *in_buf, const uint64_t len,  // Буфер
+	const int gran,											// Грануляция или длина элемента
     std::unordered_map<rtvdt::Element, uint64_t, rtvdt::KeyHash> & out_dict)
 {
     uint64_t ind = 0;

@@ -4,7 +4,8 @@ project(HafmanAlgorithm)
 
 add_executable(hafman
                 src/main.cpp
-                src/data_types.h
+                src/vector_bb.h
+				src/element.h
                 )
 
 include_directories(
@@ -15,6 +16,7 @@ include_directories(
                     
 add_executable(test_vector
                 tests/test_vector_bb.cpp
-                src/data_types.h
+                src/vector_bb.h
+				src/element.h
                 CatchInclude/single_include/catch.hpp
                )

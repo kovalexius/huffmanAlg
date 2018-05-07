@@ -20,9 +20,7 @@ namespace containers
 
 		vector_bb(std::initializer_list<bool> list) : m_count(0)
         {
-			//auto numArgs = list.size();
-			//auto lenElem = sizeof(decltype(m_data)::value_type) * 8;
-			//m_count = numArgs % lenElem;
+			m_data.push_back(0);
 
             for (auto &item : list)
                 push_back(item);
@@ -35,12 +33,15 @@ namespace containers
 
         size_t numberBits()
         {
-			return m_data.size() * sizeof(decltype(m_data)::value_type) + m_count;
+			if (m_data.size() > 0)
+				return (m_data.size() - 1) * sizeof(decltype(m_data)::value_type) * 8 + m_count;
+			return 0;
         }
 
-		size_t numberElements()
+		// return size in bytes
+		size_t size()
 		{
-
+			return m_data.size() * sizeof(decltype(m_data)::value_type);
 		}
 
 		void push_back(const bool _bit) 
@@ -56,8 +57,8 @@ namespace containers
                 m_data.back() = m_data.back() | 0x80 >> m_count;   // Взводим конкретный бит
 			else
 				m_data.back() = m_data.back() & ~(0x80 >> m_count);  // Обнуляем конкретный бит
-			auto bitLen = sizeof(decltype(m_data)::value_type) * 8;
-			if ((++m_count) > sizeof(decltype(m_data)::value_type) * 8 - 1)
+			auto lenBitElem = sizeof(decltype(m_data)::value_type) * 8;
+			if ((++m_count) > sizeof(decltype(m_data)::value_type) * 8)
                 m_count = 0;
 
 			std::vector<uint32_t>::value_type someVal;
@@ -72,12 +73,12 @@ namespace containers
         {
             if (m_data.size() == 0)
                 throw(std::out_of_range(std::string("try to pop from empty vector_bb")));
-            if ((--m_count) < 0)
-				m_count = sizeof(decltype(m_data)::value_type) - 1;
+			if ((--m_count) < 0)
+			{
+				m_count = sizeof(decltype(m_data)::value_type) * 8 - 1;
+				m_data.pop_back();
+			}
 			bool result = m_data.back() & (0x80 >> m_count);
-            //m_data.back() = m_data.back() & ~(0x80 >> m_count);
-            if (m_count == 0)
-                m_data.pop_back();
 			return result;
         }
 
