@@ -103,7 +103,8 @@ SCENARIO("Test equal operators", "[vector]")
 				REQUIRE(v1.numberBits() == 6);
                 REQUIRE(v2.size() == 1);
 				REQUIRE(v2.numberBits() == 6);
-                REQUIRE(v1 == v2);
+                REQUIRE(v1.size() == v2.size());
+				REQUIRE(v1 == v2);
             }
         }
     }

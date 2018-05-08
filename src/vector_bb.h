@@ -20,7 +20,7 @@ namespace containers
 
 		vector_bb(std::initializer_list<bool> list) : m_count(0)
         {
-			m_data.push_back(0);
+			//m_data.push_back(0);
 
             for (auto &item : list)
                 push_back(item);
@@ -35,7 +35,7 @@ namespace containers
         {
 			if (m_data.size() > 0)
 				return (m_data.size() - 1) * sizeof(decltype(m_data)::value_type) * 8 + m_count;
-			return 0;
+			return m_count;
         }
 
 		// return size in bytes
@@ -51,17 +51,23 @@ namespace containers
 			noexcept(true)
 #endif
         {
+			auto lenBitElem = sizeof(decltype(m_data)::value_type) * 8;
+			if (m_count > lenBitElem - 1)
+				m_count = 0;
             if (m_count == 0)
                 m_data.push_back(0);
             if (_bit)
                 m_data.back() = m_data.back() | 0x80 >> m_count;   // Взводим конкретный бит
 			else
 				m_data.back() = m_data.back() & ~(0x80 >> m_count);  // Обнуляем конкретный бит
-			auto lenBitElem = sizeof(decltype(m_data)::value_type) * 8;
-			if ((++m_count) > sizeof(decltype(m_data)::value_type) * 8)
-                m_count = 0;
-
-			std::vector<uint32_t>::value_type someVal;
+			++m_count;
+			
+			//if ((++m_count) > (sizeof(decltype(m_data)::value_type) * 8 - 1))
+			//{
+			//	m_count = 0;
+			//	m_data.push_back(0);
+			//}
+			//std::vector<uint32_t>::value_type someVal;
         }
 
         bool pop_back()
@@ -73,12 +79,14 @@ namespace containers
         {
             if (m_data.size() == 0)
                 throw(std::out_of_range(std::string("try to pop from empty vector_bb")));
-			if ((--m_count) < 0)
+			--m_count;
+			bool result = m_data.back() & (0x80 >> m_count);
+			if (m_count == 0)
 			{
-				m_count = sizeof(decltype(m_data)::value_type) * 8 - 1;
+				m_count = sizeof(decltype(m_data)::value_type) * 8;
 				m_data.pop_back();
 			}
-			bool result = m_data.back() & (0x80 >> m_count);
+			
 			return result;
         }
 
@@ -93,7 +101,8 @@ namespace containers
             return (m_count != other.m_count) || (m_data != other.m_data);
         }
 
-        bool operator == (const vector_bb &other) {
+        bool operator == (const vector_bb &other) 
+		{
             return (m_count == other.m_count) && (m_data == other.m_data);
         }
 
