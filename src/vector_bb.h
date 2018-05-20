@@ -20,8 +20,6 @@ namespace containers
 
 		vector_bb(std::initializer_list<bool> list) : m_count(0)
         {
-			//m_data.push_back(0);
-
             for (auto &item : list)
                 push_back(item);
         }
@@ -81,6 +79,9 @@ namespace containers
                 throw(std::out_of_range(std::string("try to pop from empty vector_bb")));
 			--m_count;
 			bool result = m_data.back() & (0x80 >> m_count);
+            m_data.back() = m_data.back() & ~(0x80 >> m_count); // Обязательно обнуляем уже извлеченный бит, 
+                                                                // т.к. с точки зрения std::vector данная единица информация присутствует в контейнере и 
+                                                                // чтобы правильно работали операторы сравнения договариваемся что неиспользуемые биты в байте должны быть обнулены
 			if (m_count == 0)
 			{
 				m_count = sizeof(decltype(m_data)::value_type) * 8;
@@ -88,6 +89,11 @@ namespace containers
 			}
 			
 			return result;
+        }
+
+        auto back()
+        {
+            return m_data.back();
         }
 
         bool operator < (const vector_bb &other) 

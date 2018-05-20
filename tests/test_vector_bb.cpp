@@ -50,6 +50,24 @@ SCENARIO("Test size calculation of vector", "[vector]")
     }
 }
 
+SCENARIO("Test integrity", "[vector]")
+{
+    GIVEN("Vector with byte with some bits")
+    {
+        containers::vector_bb v = {true, true, true, true, false, false, false, false};
+        REQUIRE(v.size() == 1);
+        REQUIRE(v.numberBits() == 8);
+        REQUIRE(v.pop_back() == false);
+        REQUIRE(v.pop_back() == false);
+        REQUIRE(v.pop_back() == false);
+        REQUIRE(v.pop_back() == false);
+        REQUIRE(v.pop_back() == true);
+        REQUIRE(v.pop_back() == true);
+        REQUIRE(v.pop_back() == true);
+        REQUIRE(v.pop_back() == true);
+    }
+}
+
 SCENARIO("Test equal operators", "[vector]")
 {
     GIVEN("A two vectors with some items")
