@@ -6,6 +6,8 @@ add_executable(hafman
                 src/main.cpp
                 src/vector_bb.h
 				src/element.h
+				src/alg_tools.cpp
+				src/alg_tools.h
                 )
 
 include_directories(

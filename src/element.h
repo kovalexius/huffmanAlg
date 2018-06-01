@@ -17,6 +17,11 @@ namespace rtvdt   // runtime variadic data types
 				return (m_len < other.m_len);
 		}
 
+		operator std::string() const
+		{
+			return std::string(m_data, m_len);
+		}
+
 		friend bool operator == (const Element&, const Element&);
 		friend bool isEquals(const Element *e1, const Element *e2);
 		friend struct EqualElement;
