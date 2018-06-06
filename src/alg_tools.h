@@ -1,23 +1,27 @@
+п»ї#ifndef __ALG_TOOLS__H
+#define __ALG_TOOLS__H
+
+
 #include <string>
 #include <unordered_map>
 #include <map>
 
 #include "vector_bb.h"
-#include "element.h"
+#include "rtv_data_types.h"
 
 
-// Подсчет кол-ва повторений каждого элемента в сообщении
-void countElements(const char* _inBuf, const uint64_t _len,		// Буфер и его длина
-					const int _gran,							// Грануляция или длина элемента в байтах
+// РџРѕРґСЃС‡РµС‚ РєРѕР»-РІР° РїРѕРІС‚РѕСЂРµРЅРёР№ РєР°Р¶РґРѕРіРѕ СЌР»РµРјРµРЅС‚Р° РІ СЃРѕРѕР±С‰РµРЅРёРё
+void countElements(const char* _inBuf, const uint64_t _len,		// Р‘СѓС„РµСЂ Рё РµРіРѕ РґР»РёРЅР°
+					const int _gran,							// Р“СЂР°РЅСѓР»СЏС†РёСЏ РёР»Рё РґР»РёРЅР° СЌР»РµРјРµРЅС‚Р° РІ Р±Р°Р№С‚Р°С…
 					std::unordered_map<rtvdt::Element, uint64_t, rtvdt::KeyHash>& _outDict);
 
 
-// Представляем каждый элемент в виде узла с указателями на правого и левого потомка и сортируем узлы 
-// в порядке возрастания их частоты появления в исходном сообщении
+// РџСЂРµРґСЃС‚Р°РІР»СЏРµРј РєР°Р¶РґС‹Р№ СЌР»РµРјРµРЅС‚ РІ РІРёРґРµ СѓР·Р»Р° СЃ СѓРєР°Р·Р°С‚РµР»СЏРјРё РЅР° РїСЂР°РІРѕРіРѕ Рё Р»РµРІРѕРіРѕ РїРѕС‚РѕРјРєР° Рё СЃРѕСЂС‚РёСЂСѓРµРј СѓР·Р»С‹ 
+// РІ РїРѕСЂСЏРґРєРµ РІРѕР·СЂР°СЃС‚Р°РЅРёСЏ РёС… С‡Р°СЃС‚РѕС‚С‹ РїРѕСЏРІР»РµРЅРёСЏ РІ РёСЃС…РѕРґРЅРѕРј СЃРѕРѕР±С‰РµРЅРёРё
 void sortDict(const std::unordered_map<rtvdt::Element, uint64_t, rtvdt::KeyHash>& _dict,
 				std::multimap<uint64_t, std::unique_ptr<treeNode>>& _outDict);
 
-// Строим дерево рекурсивно путем объединения двух узлов с наименьшей частотой появления
+// РЎС‚СЂРѕРёРј РґРµСЂРµРІРѕ СЂРµРєСѓСЂСЃРёРІРЅРѕ РїСѓС‚РµРј РѕР±СЉРµРґРёРЅРµРЅРёСЏ РґРІСѓС… СѓР·Р»РѕРІ СЃ РЅР°РёРјРµРЅСЊС€РµР№ С‡Р°СЃС‚РѕС‚РѕР№ РїРѕСЏРІР»РµРЅРёСЏ
 void buildTree(std::multimap<uint64_t, std::unique_ptr<treeNode>>& _dict);
 
 
@@ -30,3 +34,6 @@ void bypassTree(const treeNode& _node,
 				const uint64_t _len,
 				std::vector<char>& _outMsg,
 				std::unordered_map<rtvdt::Element, containers::vector_bb, rtvdt::KeyHash>& _outDict);
+
+
+#endif

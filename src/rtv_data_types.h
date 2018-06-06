@@ -1,26 +1,17 @@
+#ifndef __RT_VARIADIC_DATA_TYPES__H
+#define __RT_VARIADIC_DATA_TYPES__H
 
-
+#include <string>
 
 namespace rtvdt   // runtime variadic data types
 {
 	struct Element
 	{
-		Element(const char * ptr, const int len) : m_len(len),
-			m_data(ptr)
-		{}
+		Element(const char * ptr, const int len);
 
-		bool operator < (const Element & other) const
-		{
-			if (m_len == other.m_len)
-				return (memcmp(m_data, other.m_data, m_len) < 0) ? true : false;
-			else
-				return (m_len < other.m_len);
-		}
+		bool operator < (const Element & other) const;
 
-		operator std::string() const
-		{
-			return std::string(m_data, m_len);
-		}
+		operator std::string() const;
 
 		friend bool operator == (const Element&, const Element&);
 		friend bool isEquals(const Element *e1, const Element *e2);
@@ -33,16 +24,10 @@ namespace rtvdt   // runtime variadic data types
 	};
 
 	// Equal operator
-	bool operator == (const Element &e1, const Element &e2)
-	{
-		return (e1.m_len == e2.m_len) ? (memcmp(e1.m_data, e2.m_data, e1.m_len) == 0) : false;
-	}
+	bool operator == (const Element &e1, const Element &e2);
 
 	// Equal function
-	bool isEquals(const Element *e1, const Element *e2)
-	{
-		return (e1->m_len == e2->m_len) ? (memcmp(e1->m_data, e2->m_data, e1->m_len) == 0) : false;
-	}
+	bool isEquals(const Element *e1, const Element *e2);
 
 	// Equal Comparator
 	struct EqualElement
@@ -54,11 +39,7 @@ namespace rtvdt   // runtime variadic data types
 	};
 
 	// out manipulator
-	std::ostream & operator << (std::ostream &os, const Element & a)
-	{
-		os << std::string(a.m_data, a.m_len);
-		return os;
-	}
+	std::ostream & operator << (std::ostream &os, const Element & a);
 
 	struct KeyHash
 	{
@@ -75,9 +56,9 @@ namespace rtvdt   // runtime variadic data types
 /////////// template tools //////////
 #pragma pack(push, 1)
 template<int Len>
-struct Element
+struct TElement
 {
-	bool operator==(const Element & other) {
+	bool operator==(const TElement & other) {
 		return (memcmp(m_data, other.m_data, Len) == 0);
 	}
 private:
@@ -85,9 +66,9 @@ private:
 };
 
 template<>
-struct Element<1>
+struct TElement<1>
 {
-	bool operator==(const Element & other) {
+	bool operator==(const TElement & other) {
 		return (m_data == other.m_data);
 	}
 private:
@@ -107,3 +88,6 @@ struct treeNode
 	std::unique_ptr<treeNode> right;
 };
 /////////////////////////////////////////
+
+
+#endif
