@@ -29,14 +29,17 @@ namespace containers
             return m_data.data();
         }
 
+		// Return number of bits
         size_t numberBits()
         {
 			if (m_data.size() > 0)
+			{
 				return (m_data.size() - 1) * sizeof(decltype(m_data)::value_type) * 8 + m_count;
+			}
 			return m_count;
         }
 
-		// return size in bytes
+		// Return size in bytes
 		size_t size()
 		{
 			return m_data.size() * sizeof(decltype(m_data)::value_type);
@@ -59,13 +62,6 @@ namespace containers
 			else
 				m_data.back() = m_data.back() & ~(0x80 >> m_count);  // Обнуляем конкретный бит
 			++m_count;
-			
-			//if ((++m_count) > (sizeof(decltype(m_data)::value_type) * 8 - 1))
-			//{
-			//	m_count = 0;
-			//	m_data.push_back(0);
-			//}
-			//std::vector<uint32_t>::value_type someVal;
         }
 
         bool pop_back()
@@ -103,7 +99,8 @@ namespace containers
             return (m_count < other.m_count);
         }
 
-        bool operator != (const vector_bb &other) {
+        bool operator != (const vector_bb &other) 
+		{
             return (m_count != other.m_count) || (m_data != other.m_data);
         }
 
@@ -112,9 +109,41 @@ namespace containers
             return (m_count == other.m_count) && (m_data == other.m_data);
         }
 
-		char& operator[](size_t pos) {
+		char& operator[](size_t pos) 
+		{
 			return m_data[pos];
         }
+
+		// Распечатать нолики и единички
+		operator std::string() const
+		{
+			if (m_data.size() < 1)
+				return std::string();
+
+			std::string result;
+			int numFullBytes = m_data.size() - 1;
+			for (int i = 0; i < numFullBytes; i++)
+			{
+				for (int j = 0; j < sizeof(decltype(m_data)::value_type) * 8; j++)
+				{
+					if (m_data[i] & (0x80 >> j))
+						result += "1";
+					else
+						result += "0";
+				}
+			}
+
+			for (int j = 0; j < m_count; j++)
+			{
+				if (m_data.back() & (0x80 >> j))
+					result += "1";
+				else
+					result += "0";
+			}
+
+			return result;
+		}
+
     private:
 		// Количество заполненных бит в текущем байте
         int m_count;

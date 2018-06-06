@@ -25,61 +25,75 @@ void countElements(const char* _inBuf, const uint64_t _len,		// Буфер
 // Представляем каждый элемент в виде узла с указателями на правого и левого потомка и сортируем узлы 
 // в порядке возрастания их частоты появления в исходном сообщении
 void sortDict(const std::unordered_map<rtvdt::Element, uint64_t, rtvdt::KeyHash>& _dict,
-			std::multimap<uint64_t, std::unique_ptr<treeNode>>& _outDict)
+			std::multimap<uint64_t, std::unique_ptr<TreeNode>>& _outDict)
 {
 	for (auto item : _dict)
 	{
-		auto it = std::make_unique<treeNode>();
+		auto it = std::make_unique<TreeNode>();
 		it->elem = std::make_unique<rtvdt::Element>(item.first);
 		_outDict.insert(std::make_pair(item.second, std::move(it)));
 	}
 }
 
 // Строим дерево рекурсивно путем объединения двух узлов с наименьшей частотой появления
-void buildTree(std::multimap<uint64_t, std::unique_ptr<treeNode>>& _dict)
+void buildTree(std::multimap<uint64_t, std::unique_ptr<TreeNode>>& _dict)
 {
 	
 	while (_dict.size() > 1)
 	{
 		auto sz = _dict.size();
-		auto node = std::make_unique<treeNode>();
-		auto left = _dict.begin();
-		auto right = left;
-		++right;
-		node->left = std::move(left->second);
-		node->right = std::move(right->second);
-		auto weight = left->first + right->first;
-		_dict.erase(left);
-		_dict.erase(right);
+		auto node = std::make_unique<TreeNode>();
+		auto leftIt = _dict.begin();
+		auto rightIt = leftIt;
+		++rightIt;
+
+		if(leftIt->second->elem)
+			std::cout << "left element: \'" << (std::string)*leftIt->second->elem << "\'";
+		std::cout << "  left weight: \'" << leftIt->first << "\'" << std::endl;
+		if (rightIt->second->elem)
+			std::cout << "right element: \'" << (std::string)*rightIt->second->elem << "\'";
+		std::cout << "  right weight: \'" << rightIt->first << "\'" << std::endl;
+
+		std::cout << std::endl;
+		node->left = std::move(leftIt->second);
+		node->right = std::move(rightIt->second);
+		auto weight = leftIt->first + rightIt->first;
+		_dict.erase(leftIt);
+		_dict.erase(rightIt);
 		_dict.insert(std::make_pair(weight, std::move(node)));
 	}
 }
 
-void recursiveBypass(const treeNode* _node,
+void recursiveBypass(const TreeNode* _node,
 	containers::vector_bb& _curCode,
 	std::unordered_map<rtvdt::Element, containers::vector_bb, rtvdt::KeyHash>& _outDict)
 {
+	
 	if (_node->left)
 	{
 		_curCode.push_back(false);
 		_node = _node->left.get();
 		recursiveBypass(_node, _curCode, _outDict);
+		_curCode.pop_back();
 	}
 	if (_node->right)
 	{
 		_curCode.push_back(true);
 		_node = _node->right.get();
 		recursiveBypass(_node, _curCode, _outDict);
+		_curCode.pop_back();
 	}
 
 	//We must meet Element
 	if (_node->elem)
+	{
+		std::cout << __FUNCTION__ << " _node->elem: \'" << (std::string)*_node->elem << 
+			"\' curCode: \'" << (std::string)_curCode << "\'" << std::endl;
 		_outDict.insert(std::make_pair(*_node->elem, _curCode));
-
-	_curCode.pop_back();
+	}
 }
 
-void bypassTree(const treeNode& _node,
+void bypassTree(const TreeNode& _node,
 	const char* _inMsg,
 	const uint64_t _len,
 	std::vector<char>& _outMsg,

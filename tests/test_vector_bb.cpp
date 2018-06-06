@@ -18,6 +18,8 @@ SCENARIO("Test size calculation of vector", "[vector]")
 
 			THEN("the size in bytes not changed")
 			{
+				std::string strBits = v;
+				REQUIRE(strBits == "10111011");
 				REQUIRE(v.size() == 1);
 				REQUIRE(v.numberBits() == 8);
 			}
@@ -30,6 +32,8 @@ SCENARIO("Test size calculation of vector", "[vector]")
 
 			THEN("the size increased")
 			{
+				std::string strBits = v;
+				REQUIRE(strBits == "101110011");
 				REQUIRE(v.size() == 2);
 				REQUIRE(v.numberBits() == 9);
 			}
@@ -43,6 +47,8 @@ SCENARIO("Test size calculation of vector", "[vector]")
 
 			THEN("the size increased")
 			{
+				std::string strBits = v;
+				REQUIRE(strBits == "10111001");
 				REQUIRE(v.size() == 1);
 				REQUIRE(v.numberBits() == 8);
 			}
@@ -55,6 +61,8 @@ SCENARIO("Test integrity", "[vector]")
     GIVEN("Vector with byte with some bits")
     {
         containers::vector_bb v = {true, true, true, true, false, false, false, false};
+		std::string strBits = v;
+		REQUIRE(strBits == "11110000");
         REQUIRE(v.size() == 1);
         REQUIRE(v.numberBits() == 8);
         REQUIRE(v.pop_back() == false);
@@ -87,6 +95,10 @@ SCENARIO("Test equal operators", "[vector]")
 
             THEN("the size of both == 2")
             {
+				std::string strBits1 = v1;
+				REQUIRE(strBits1 == "101110011");
+				std::string strBits2 = v2;
+				REQUIRE(strBits2 == "101110011");
                 REQUIRE(v1.size() == 2);
                 REQUIRE(v2.size() == 2);
                 REQUIRE(v1 == v2);

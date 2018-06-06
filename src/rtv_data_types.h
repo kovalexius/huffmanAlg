@@ -81,11 +81,12 @@ private:
 
 
 //////////type for binary tree///////////
-struct treeNode
+struct TreeNode
 {
+
 	std::unique_ptr<rtvdt::Element> elem;
-	std::unique_ptr<treeNode> left;
-	std::unique_ptr<treeNode> right;
+	std::unique_ptr<TreeNode> left;
+	std::unique_ptr<TreeNode> right;
 };
 /////////////////////////////////////////
 
