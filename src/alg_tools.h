@@ -24,12 +24,13 @@ void sortDict(const std::unordered_map<rtvdt::Element, uint64_t, rtvdt::KeyHash>
 // Строим дерево рекурсивно путем объединения двух узлов с наименьшей частотой появления
 void buildTree(std::multimap<uint64_t, std::unique_ptr<TreeNode>>& _dict);
 
-
+// Построение кодовых цепочек для каждого элемента
 void recursiveBypass(const TreeNode* _node,
 					containers::vector_bb& _curCode,
 					std::unordered_map<rtvdt::Element, containers::vector_bb, rtvdt::KeyHash>& _outDict);
 
-void bypassTree(const TreeNode& _node,
+// Построение сжатого сообщения
+void bypassTree(const TreeNode* _node,
 				const char* _inMsg,
 				const uint64_t _len,
 				std::vector<char>& _outMsg,

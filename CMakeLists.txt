@@ -4,6 +4,7 @@ project(HafmanAlgorithm)
 
 add_executable(hafman
                 src/main.cpp
+				src/vector_bb.cpp
                 src/vector_bb.h
 				src/rtv_data_types.cpp
 				src/rtv_data_types.h
@@ -19,6 +20,7 @@ include_directories(
                     
 add_executable(test_vector
                 tests/test_vector_bb.cpp
+				src/vector_bb.cpp
                 src/vector_bb.h
 				src/rtv_data_types.cpp
 				src/rtv_data_types.h
