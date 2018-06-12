@@ -139,3 +139,45 @@ SCENARIO("Test equal operators", "[vector]")
         }
     }
 }
+
+SCENARIO("Test math operators", "[vector]")
+{
+	GIVEN("A two vectors with some items")
+	{
+		WHEN("")
+		{
+			containers::vector_bb v1 = { true, false, true, true, true, false, false };
+			REQUIRE(v1.size() == 1);
+			REQUIRE(v1.numberBits() == 7);
+			containers::vector_bb v2 = { true };
+			REQUIRE(v2.size() == 1);
+			REQUIRE(v2.numberBits() == 1);
+
+			v1 += v2;
+			THEN("")
+			{
+				std::string strBits1 = v1;
+				REQUIRE(strBits1 == "10111001");
+				REQUIRE(v1.numberBits() == 8);
+			}
+		}
+
+		WHEN("")
+		{
+			containers::vector_bb v1 = { true, false, true, true, true };
+			REQUIRE(v1.size() == 1);
+			REQUIRE(v1.numberBits() == 5);
+			containers::vector_bb v2 = { true, false, true, false, false, true };
+			REQUIRE(v2.size() == 1);
+			REQUIRE(v2.numberBits() == 6);
+
+			v1 += v2;
+			THEN("")
+			{
+				std::string strBits1 = v1;
+				REQUIRE(strBits1 == "10111101001");
+				REQUIRE(v1.numberBits() == 11);
+			}
+		}
+	}
+}

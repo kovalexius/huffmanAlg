@@ -45,7 +45,7 @@ int main()
 	{
 		auto currentNode = it->second.get();
 		std::unordered_map<rtvdt::Element, containers::vector_bb, rtvdt::KeyHash> outDict;
-		std::vector<char> outMsg;
+		containers::vector_bb outMsg;
 		bypassTree(currentNode,
 			in_str.data(),
 			in_str.size(),

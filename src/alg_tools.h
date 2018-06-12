@@ -33,7 +33,7 @@ void recursiveBypass(const TreeNode* _node,
 void bypassTree(const TreeNode* _node,
 				const char* _inMsg,
 				const uint64_t _len,
-				std::vector<char>& _outMsg,
+				containers::vector_bb& _outMsg,
 				std::unordered_map<rtvdt::Element, containers::vector_bb, rtvdt::KeyHash>& _outDict);
 
 

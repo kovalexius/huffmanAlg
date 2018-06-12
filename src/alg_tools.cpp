@@ -109,7 +109,7 @@ void recursiveBypass(const TreeNode* _node,
 void bypassTree(const TreeNode* _node,
 	const char* _inMsg,
 	const uint64_t _len,
-	std::vector<char>& _outMsg,
+	containers::vector_bb& _outMsg,
 	std::unordered_map<rtvdt::Element, containers::vector_bb, rtvdt::KeyHash>& _outDict)
 {
 	containers::vector_bb currentCode;
@@ -122,7 +122,6 @@ void bypassTree(const TreeNode* _node,
 		std::cout << "Element: \'" << (std::string)item.first << "\' vector_bb: \'" << (std::string)item.second << "\'" << std::endl;
 	}
 
-	containers::vector_bb resultMsg;
 	auto gran = _outDict.begin()->first.m_len;
 	uint64_t offset = 0;
 	while (offset < _len)
@@ -131,7 +130,7 @@ void bypassTree(const TreeNode* _node,
 		auto it = _outDict.find(cur_element);
 		if (it != _outDict.end())
 		{
-			resultMsg += it->second;
+			_outMsg += it->second;
 		}
 		offset += gran;
 	}
