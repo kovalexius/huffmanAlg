@@ -1,6 +1,7 @@
 #include "rtv_data_types.h"
 
 #include <cstring>
+#include <string>
 
 namespace rtvdt   // runtime variadic data types
 {

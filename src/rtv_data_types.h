@@ -2,6 +2,8 @@
 #define __RT_VARIADIC_DATA_TYPES__H
 
 #include <string>
+#include <memory>
+#include <sstream>
 
 namespace rtvdt   // runtime variadic data types
 {

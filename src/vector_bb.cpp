@@ -29,7 +29,7 @@ namespace containers
 		return m_data.size() * sizeof(decltype(m_data)::value_type);
 	}
 
-#ifdef _MSC_VER <= 1800
+#if _MSC_VER <= 1800
 	void vector_bb::push_back(const bool _bit) throw()
 #else
 	void vector_bb::push_back(const bool _bit) noexcept(true)
@@ -48,7 +48,7 @@ namespace containers
 	}
 
 	
-#ifdef _MSC_VER <= 1800
+#if _MSC_VER <= 1800
 	bool vector_bb::pop_back() throw(std::out_of_range)
 #else
 	bool vector_bb::pop_back() noexcept(false)

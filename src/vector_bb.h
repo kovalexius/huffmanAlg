@@ -29,13 +29,13 @@ namespace containers
 		size_t size();
 
 		
-#ifdef _MSC_VER <= 1800
+#if _MSC_VER <= 1800
 		void push_back(const bool _bit) throw();
 #else
 		void push_back(const bool _bit) noexcept(true);
 #endif
 
-#ifdef _MSC_VER <= 1800
+#if _MSC_VER <= 1800
 		bool pop_back() throw(std::out_of_range);
 #else
 		bool pop_back() noexcept(false);
